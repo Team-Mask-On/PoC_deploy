@@ -313,3 +313,7 @@ fabric.properties
 
 # profiling data
 Pipfile.lock
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
