@@ -40,7 +40,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-THIRD_PARTY_APPS = ["rest_framework",]
+THIRD_PARTY_APPS = ["rest_framework", "storages", ]
 
 PROJECT_APPS = [
     'photos.apps.PhotosConfig',
@@ -126,6 +126,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+AWS_ACCESS_KEY_ID = "AKIA6Q4AZTILFIC26EO3"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "poc-mask-on"
+AWS_DEFAULT_ACL = "public-read"
+
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.ap-northeast-2.amazonaws.com"
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "images")
 MEDIA_URL = '/images/'
