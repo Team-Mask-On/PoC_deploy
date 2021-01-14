@@ -1,9 +1,11 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Photo
 from .serializers import PhotoSerializer
+from .responses import *
+from .utils import send_json
 from PIL import Image
 import os
 import datetime
@@ -14,18 +16,23 @@ class ReceptPhoto(APIView):
         return HttpResponse("Success")
 
     def post(self, request):
+        file = request.FILES.popitem()
+        if not file:
+            return send_json(fileDoesNotExists)
+        image = file[1][0]
         try:
-            # 여기서 file을 튜플 형태로 client가 보낸 그대로 받아옮.
-            file = request.FILES.popitem()
-            file = file[1][0]
-            binary_file = file.file
-            img = Image.open(binary_file)
-            num = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            abspath = os.path.abspath("./photos/test{}.jpg".format(num))
+            binary_image = image.file
+            img = Image.open(binary_image)
+        except:
+            return send_json(imageDoesNotExists)
+
+        num = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        abspath = os.path.abspath("./photos/test{}.jpg".format(num))
+        try:
             img.save(
                 abspath,
                 "JPEG",
             )
-            return HttpResponse("file received")
         except:
-            return HttpResponse("No Post")
+            return send_json(saveFailed)
+        return send_json(saveSucceed)
